@@ -25,8 +25,6 @@ String get_time(const RtcDateTime& dt)
     return String(datestring);
 }
 
-//src  - https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-module-with-arduino/
-
 void loop () 
 {
     RtcDateTime now = Rtc.GetDateTime();
