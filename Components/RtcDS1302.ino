@@ -1,37 +1,62 @@
-#include <ThreeWire.h>  
+#include <ThreeWire.h>
 #include <RtcDS1302.h>
 
 
-ThreeWire myWire(4,5,2); // IO, SCLK, CE
+ThreeWire myWire(4, 3, 2);  // dat, clk, rst
 RtcDS1302<ThreeWire> Rtc(myWire);
 
-void setup () 
+void setup() 
 {
     Serial.begin(9600);
-    
+
     Rtc.Begin();
 }
 
-#define countof(a) (sizeof(a) / sizeof(a[0]))
+
 String get_time(const RtcDateTime& dt)
 {
-    char datestring[20];
-    snprintf_P(datestring, 
-            countof(datestring),
-            PSTR("%02u:%02u"),
-            dt.Hour(),
-            dt.Minute() );
+  String time ;
+    int hr = dt.Hour();
+    int min = dt.Minute();
     
-    return String(datestring);
+    if(hr<10)
+      time+="0";
+    time+=hr;
+    time+=":";
+    if(min<10)
+      time+="0";
+    time+=min;
+  
+    return time;
 }
 
-void loop () 
+String get_date(const RtcDateTime& dt)
 {
-    RtcDateTime now = Rtc.GetDateTime();
-    String tm = get_time(now);
+  String date ;
+    int day   = dt.Day();
+    int month = dt.Month();
+    int year  = dt.Year();
     
-    Serial.println(tm);
+    date += day;
+    date += "/";
+    date += month;
+    date += "/";
+    date += year;
+    date += "/";
+
+    return String(date);
+}
 
 
-    delay(5000); // five seconds
+//src  - https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-module-with-arduino/
+
+void loop() {
+  RtcDateTime now = Rtc.GetDateTime();
+  String tm = get_time(now);
+
+  Serial.println(tm);
+  Serial.println(get_date(now));
+
+
+  delay(5000);  // five seconds
 }
