@@ -4,13 +4,13 @@
 /*
 MOSI - pin 11
 MISO - pin 12
-CLK - pin 13
+CLK/SCK - pin 13
 CS - pin 10 
 */
 bool sd_card_in = true;
 const int CSpin = 10;
 File sensorData;
-int WRITE_DATA_AFTER = 300;  // time in secs, prefer 300(= 5 mins)
+int WRITE_DATA_AFTER = 3;  // time in secs, prefer 300(= 5 mins)
 
 
 struct DataQueary {
