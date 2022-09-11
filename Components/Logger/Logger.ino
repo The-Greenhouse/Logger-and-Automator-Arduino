@@ -6,6 +6,9 @@
 #include "SD.h"
 #include"SPI.h"
 
+#define Heater_pin 14
+#define Humidity_pin 15
+
 
 struct DataQueary {
   String date;
@@ -174,14 +177,37 @@ void setup()
   Rtc.Begin();
 
   setup_sd_card();
+
+  pinMode(Heater_pin, OUTPUT);
+  pinMode(Humidity_pin, OUTPUT);
 }
 
 long itr = 0;
 DataQueary data = {"00/00/0000", "00:00", 0,10, 0,10, 0,10, 0,10};
+
+int temp_thresh_hold = 31;
+int hum_thresh_hold = 50;
+
+int temp_in_, hum_in_;
 void loop(){
   RtcDateTime now = Rtc.GetDateTime();
   String date_ = get_date(now);
   String time_ = get_time(now);
+
+  temp_in_ = (data.t1 + data.t2) / 2;
+  hum_in_  = (data.h1 + data.h2) / 2;
+
+  if (temp_in_ < temp_thresh_hold){
+    digitalWrite(Heater_pin, HIGH);
+  } else{
+   digitalWrite(Heater_pin, LOW); 
+  }
+
+  if (hum_in_ < hum_thresh_hold){
+    digitalWrite(Humidity_pin, HIGH);
+  } else{
+   digitalWrite(Humidity_pin, LOW); 
+  }
 
   String env_1_data = get_dht_data_string(                      // Inside the Controlled Greenhouse ENV
     (data.t1 + data.t2) / 2,
